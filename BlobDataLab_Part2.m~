@@ -31,10 +31,8 @@ end
 %(the code I wrote later will only work if you name these indices "indlon"
 %and "indlat")
 
-%indlat = min(abs(woa.lat-lat_moor))
-indlat= 50.5
-%indlon = find(woa.lon==lon_moor)
-indlon= -144.5
+indlat = find(woa.lat==lat)
+indlon = find(woa.lon==lon)
 
 %Determine the depth index within woa.depth that matches the depth of the
 %temperature sensor on the OOI flanking mooring B (the code I wrote later
