@@ -31,10 +31,10 @@ end
 %(the code I wrote later will only work if you name these indices "indlon"
 %and "indlat")
 
-%indlat = min(abs(woa.lat-lat_moor))
-indlat= 50.5
-%indlon = find(woa.lon==lon_moor)
-indlon= -144.5
+[indlat, indloc] = min(abs(woa.lat-lat_moor))
+%indlat= 50.5
+[indlon, indlonloc] = min(abs(lon_moor-woa.lon))
+%indlon= -144.5
 
 %Determine the depth index within woa.depth that matches the depth of the
 %temperature sensor on the OOI flanking mooring B (the code I wrote later
@@ -46,7 +46,7 @@ inddepth = find(woa.depth == 30);
 %annual climatology of temperature at the location where the OOI flanking
 %mooring B data were collected
 
-woa_papa = squeeze(woa.T(indlon,indlat,inddepth,:));
+woa_papa = squeeze(woa.T(indlonloc,indloc,inddepth,:));
 
 %% 2a. Create an extended version of the World Ocean Atlas 12-month climatology
 % repeated over the entire timeline of which the OOI mooring data were collected
@@ -72,16 +72,17 @@ datetick('x', 23)
 % temperature data over the extended timeline (woa_papa_rep) from the
 % original extended monthly data (woa_time) onto the times when the OOI
 % data were collected (from your Part 1 analysis)
-% -->
+interp_woa=interp1(woa_time,  woa_papa_rep, tt_merged);
+
 
 %% 3b. Calculate the temperature anomaly as the difference between the OOI mooring
 % observations (using the smoothed data during good intervals) and the
 % climatological data from the World Ocean Atlas interpolated onto those
 % same timepoints
-% -->
+diff_woa_moor= SST_merged-interp_woa
 
 %% 4. Plot the time series of the T anomaly you have now calculated by combining the WOA and OOI data
-
+plot(tt_merged, diff_woa_moor, 'k.')
 %% 5. Now bring in the satellite data observed at Ocean Station Papa
 
 %5a. Convert satellite time to MATLAB timestamp (following the same approach
