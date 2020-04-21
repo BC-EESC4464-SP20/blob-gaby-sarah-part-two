@@ -32,9 +32,9 @@ end
 %and "indlat")
 
 [indlat, indloc] = min(abs(woa.lat-lat_moor))
-%indlat= 50.5
+
 [indlon, indlonloc] = min(abs(lon_moor-woa.lon))
-%indlon= -144.5
+
 
 %Determine the depth index within woa.depth that matches the depth of the
 %temperature sensor on the OOI flanking mooring B (the code I wrote later
@@ -62,7 +62,7 @@ woa_papa_rep = [repmat(woa_papa,7,1); woa_papa(1:3)];
 
 %% 2b. Plot the WOA temperature time series along with the OOI temperature time series from Part 1
 %confused
-plot(tt_merged, SST_merged, "k-")
+plot(tt_merged, SST_merged, "k.")
 hold on 
 plot (woa_time,  woa_papa_rep)
 datetick('x', 23)
@@ -88,17 +88,25 @@ plot(tt_merged, diff_woa_moor, 'k.')
 %5a. Convert satellite time to MATLAB timestamp (following the same approach
 %as in Part 1 step 2, where you will need to check the units on the satellite data
 %timestamp and use the datenum function to make the conversion)
-% -->
+filename = 'jplMURSST41anommday_b7e9_0580_070c.nc';
+time_sat = ncread(filename,'time');
+tt_sat=datenum(1970,1,1,0,0,time_sat);
+diff_tt_sat=diff(tt_sat)
 
 %5b. In order to extract the satellite SSTanom data from the grid cell
 %nearest to OSP, calculate the indices of the longitude and latitude in the
 %satellite data grid nearest to the latitude and longitude of Ocean Station
 %Papa (as you did for the WOA data in Step 1 above)
-% -->
-% -->
+[indlat_sat, indlatloc_sat] = min(abs(lat_sat-lat_moor))
+[indlon_sat, indlonloc_sat] = min(abs(lon_moor - lon_sat))
 
 %% 6. Plot the satellite SSTanom data extracted from Ocean Station Papa and
 %the mooring-based temperature anomaly calculated by combining the OOI and
 %WOA data together as separate lines on the same time-series plot (adding
 %to your plot from step 4) so that you can compare the two records
+prepare_squeeze = sstAnom_sat(70,62,:);
+squeeze_sstAnom_sat = squeeze(prepare_squeeze);
+plot(tt_merged, diff_woa_moor, 'k.');
+hold on
+plot (tt_sat, squeeze_sstAnom_sat , 'r.');
 
